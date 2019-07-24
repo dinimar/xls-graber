@@ -24,7 +24,7 @@ ch.setFormatter(formatter)
 # add handlers to logger
 cli_logger.addHandler(ch)
 
-root = "c:/Users/Dinir/Documents/git/nativeskatestore-graber/"
+root = "c:/Users/Dinir/Documents/git/xls-graber/"
 # q_file = "resources/sample-file.xlsx"
 q_file = "resources/questions-upd.csv"
 fin_q_file = q_file
@@ -90,13 +90,15 @@ def add_header():
 def main():
     try:
         process_list_page(next_page)
-        for i in range(20, 40, 20):
+        for i in range(20, 80, 20):
             process_list_page(next_page + "?start=" + str(i))
             if ((i % 20 == 0) or (i == 10952380)):
                 write_in_csv(i)
     finally:
         q_filecsv.close()
         cli_logger.warn(q_file+" is saved")
+        add_cats()
+        cli_logger.warn("Added categories in " + cat_file)
         cat_filecsv.close()
         cli_logger.warn(cat_file+" is saved")
 
@@ -113,8 +115,6 @@ def write_in_csv(i):
     cli_logger.warn(q_file+" is created")
     add_header()
 
-    add_cats()
-    cli_logger.warn("Added categories in " + cat_file)
     add_ques()
     add_ans()
     cli_logger.warn("Added questions in " + q_file)
