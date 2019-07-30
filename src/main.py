@@ -24,7 +24,7 @@ ch.setFormatter(formatter)
 # add handlers to logger
 cli_logger.addHandler(ch)
 
-root = "c:/Users/Dinir/Documents/git/xls-graber/"
+root = "/home/dinir/Documents/git/xls-graber/"
 # q_file = "resources/sample-file.xlsx"
 q_file = "resources/questions-upd.csv"
 fin_q_file = q_file
@@ -90,9 +90,9 @@ def add_header():
 def main():
     try:
         process_list_page(next_page)
-        for i in range(20, 80, 20):
+        for i in range(20, 10952381, 20):
             process_list_page(next_page + "?start=" + str(i))
-            if ((i % 20 == 0) or (i == 10952380)):
+            if ((i % 1000 == 0) or (i == 10952380)):
                 write_in_csv(i)
     finally:
         q_filecsv.close()
