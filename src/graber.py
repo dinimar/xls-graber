@@ -64,7 +64,7 @@ ans_username_x = "./form//span[contains(@class, 'qa-a-item-avatar-meta')]/span" 
             "/span[contains(@class, 'qa-a-item-who-data')]/span/a/span[contains(@itemprop, 'name')]"
 
 date_p = "%Y-%m-%dT%H:%M:%S%z" 
-date_f = "%d.%m.%Y %H:%M:%S"
+date_f = "%Y-%m-%d %H:%M:%S"
 
 host = "https://i-otvet.ru"
 next_page = host+"/questions"
@@ -95,8 +95,8 @@ def main():
                 write_in_csv(i)
                 break
     finally:
-        q_filecsv.close()
-        cli_logger.warn(q_file+" is saved")
+        # q_filecsv.close()
+        # cli_logger.warn(q_file+" is saved")
         add_cats()
         cli_logger.warn("Added categories in " + cat_file)
         cat_filecsv.close()
@@ -155,7 +155,8 @@ def process_q_page(q_link):
     # grab q_block datetime 
     datetime_from = get_date(q_block.xpath(q_date_x)[0].attrib.get('datetime'))
     # grab q_block tags
-    tags = get_tags(q_block.xpath(q_tags_x))
+    # tags = get_tags(q_block.xpath(q_tags_x))
+    tags = "" # remove redundant field
     # grab q_block username
     user_el = q_block.xpath(q_username_x)
     username = 'аноним'
@@ -296,8 +297,9 @@ def get_date(date_str):
 
 def get_tags(tags):
     t_str = ""
-    for tag in tags:
-        t_str += tag.text+", "
+    leng = 4 if len(tags) > 4 else len(tags)
+    for i in range(leng):
+        t_str += tags[i].text+", "
 
     return t_str[0:-2]
 
