@@ -26,7 +26,7 @@ cli_logger.addHandler(ch)
 
 root = "/home/dinir/Documents/git/xls-graber/"
 # q_file = "resources/sample-file.xlsx"
-q_file = "resources/questions-upd.csv"
+q_file = "resources/questions.csv"
 fin_q_file = q_file
 # cat_file = "resources/categories.xlsx"
 cat_file = "resources/categories.csv"
@@ -93,6 +93,7 @@ def main():
             process_list_page(next_page + "?start=" + str(i))
             if ((i % 1000 == 0) or (i == 10952380)):
                 write_in_csv(i)
+                break
     finally:
         q_filecsv.close()
         cli_logger.warn(q_file+" is saved")
@@ -166,7 +167,8 @@ def process_q_page(q_link):
     if (len(cat_el) != 0):
         category_id = get_id(cat_el[0].text)
 
-    q_list.append(Question(q_id, tags, title, username, datetime_from, content, category_id))
+    q_list.append(Question(q_id=q_id, title=title, tags=tags, username=username, 
+        datetime_from=datetime_from, content=content, cat_id=category_id))
     process_answers(q_id, tree)
     
     q_id = q_id + 1
