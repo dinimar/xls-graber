@@ -17,7 +17,7 @@ ch.setFormatter(formatter)
 # add handlers to logger
 cli_logger.addHandler(ch)
 
-root = "c:/Users/Dinir/Documents/git/xls-graber/"
+root = "/home/dinir/Documents/git/xls-graber/"
 csv_dir = "resources/"
 out_dir = "resources/out/"
 csv_db_name = "questions-upd.csv" 

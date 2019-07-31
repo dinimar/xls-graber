@@ -29,7 +29,7 @@ root = "/home/dinir/Documents/git/xls-graber/"
 q_file = "resources/questions-upd.csv"
 fin_q_file = q_file
 # cat_file = "resources/categories.xlsx"
-cat_file = "resources/categories-upd.csv"
+cat_file = "resources/categories.csv"
 
 q_id = 1
 c_id = 1
@@ -78,7 +78,6 @@ fieldnames = ['Id', 'Type', 'ParentIdInFile', 'ParentIdInSIte', 'Title', 'Conten
                 'AnonymousName', 'Notify', 'ExtraValue', 'DateTimeFrom', 'DateTimeTo', 'Selected']
 
 # if os.path.isfile(q_file):
-q_filecsv = open(os.path.join(root, q_file), 'w', newline='', encoding='utf-8')
 cat_filecsv = open(os.path.join(root, cat_file), 'w', newline='', encoding='utf-8')
 # if os.path.isfile(cat_file):
 def add_header():
