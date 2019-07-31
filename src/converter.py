@@ -46,9 +46,10 @@ def create_xls(csv_name, out_xls_name):
 		    wb_q_s.cell(column=fieldnames['ParentIdInFile'], row=last_free_row).value = row[fieldnames['ParentIdInFile']-1]
 		    wb_q_s.cell(column=fieldnames['ParentIdInSIte'], row=last_free_row).value = row[fieldnames['ParentIdInSIte']-1]
 		    wb_q_s.cell(column=fieldnames['Title'], row=last_free_row).value = row[fieldnames['Title']-1]
-		    wb_q_s.cell(column=fieldnames['Content'], row=last_free_row).value = row[fieldnames['Content']-1]
+		    # if there is no content -> 'N/A'
+		    wb_q_s.cell(column=fieldnames['Content'], row=last_free_row).value = "N/A" if row[fieldnames['Content']-1] == "" else row[fieldnames['Content']-1]
 		    wb_q_s.cell(column=fieldnames['Format'], row=last_free_row).value = row[fieldnames['Format']-1]
-		    wb_q_s.cell(column=fieldnames['CategoryId'], row=last_free_row).value = row[fieldnames['CategoryId']-1]
+		    wb_q_s.cell(column=fieldnames['CategoryId'], row=last_free_row).value = int(row[fieldnames['CategoryId']-1]) + 55 if (row[fieldnames['CategoryId']-1] != "" and row[fieldnames['CategoryId']-1] != 'CategoryId') else ""
 		    wb_q_s.cell(column=fieldnames['CategoryUrl'], row=last_free_row).value = row[fieldnames['CategoryUrl']-1]
 		    wb_q_s.cell(column=fieldnames['Tags'], row=last_free_row).value = row[fieldnames['Tags']-1]
 		    wb_q_s.cell(column=fieldnames['UserName'], row=last_free_row).value = row[fieldnames['UserName']-1]
