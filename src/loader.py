@@ -65,7 +65,7 @@ options = Options()
 # options.headless = True
 driver = webdriver.Firefox(options=options)
 try:
-	driver.get("https://vashotvet.com/")
+	driver.get(creds['site-url'])
 
 	# open login dialog
 	cli_logger.info("Waiting a toggle button")
