@@ -41,32 +41,49 @@ def create_xls(csv_name, out_xls_name):
 		spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 		wb_q_s = wb_q.active
 		for row in spamreader:
-		    wb_q_s.cell(column=fieldnames['Id'], row=last_free_row).value = row[fieldnames['Id']-1]
-		    wb_q_s.cell(column=fieldnames['Type'], row=last_free_row).value = row[fieldnames['Type']-1]
-		    wb_q_s.cell(column=fieldnames['ParentIdInFile'], row=last_free_row).value = row[fieldnames['ParentIdInFile']-1]
-		    wb_q_s.cell(column=fieldnames['ParentIdInSIte'], row=last_free_row).value = row[fieldnames['ParentIdInSIte']-1]
-		    wb_q_s.cell(column=fieldnames['Title'], row=last_free_row).value = row[fieldnames['Title']-1]
-		    # if there is no content -> 'N/A'
-		    wb_q_s.cell(column=fieldnames['Content'], row=last_free_row).value = "N/A" if row[fieldnames['Content']-1] == "" else row[fieldnames['Content']-1]
-		    wb_q_s.cell(column=fieldnames['Format'], row=last_free_row).value = row[fieldnames['Format']-1]
-		    wb_q_s.cell(column=fieldnames['CategoryId'], row=last_free_row).value = int(row[fieldnames['CategoryId']-1]) + 55 if (row[fieldnames['CategoryId']-1] != "" and row[fieldnames['CategoryId']-1] != 'CategoryId') else ""
-		    wb_q_s.cell(column=fieldnames['CategoryUrl'], row=last_free_row).value = row[fieldnames['CategoryUrl']-1]
-		    wb_q_s.cell(column=fieldnames['Tags'], row=last_free_row).value = row[fieldnames['Tags']-1]
-		    wb_q_s.cell(column=fieldnames['UserName'], row=last_free_row).value = row[fieldnames['UserName']-1]
-		    wb_q_s.cell(column=fieldnames['AnonymousName'], row=last_free_row).value = row[fieldnames['AnonymousName']-1]
-		    wb_q_s.cell(column=fieldnames['Notify'], row=last_free_row).value = row[fieldnames['Notify']-1]
-		    wb_q_s.cell(column=fieldnames['ExtraValue'], row=last_free_row).value = row[fieldnames['ExtraValue']-1]
-		    wb_q_s.cell(column=fieldnames['DateTimeFrom'], row=last_free_row).value = row[fieldnames['DateTimeFrom']-1]
-		    wb_q_s.cell(column=fieldnames['DateTimeTo'], row=last_free_row).value = row[fieldnames['DateTimeTo']-1]
-		    wb_q_s.cell(column=fieldnames['Selected'], row=last_free_row).value = row[fieldnames['Selected']-1]
-		    last_free_row = last_free_row + 1
+			# if it's not empty and a first row parse to int
+			if (row[fieldnames['Id']-1] != "" and row[fieldnames['Id']-1] != "Id"):	
+				wb_q_s.cell(column=fieldnames['Id'], row=last_free_row).value = int(row[fieldnames['Id']-1])
+			elif (row[fieldnames['Id']-1] == "Id"):
+				wb_q_s.cell(column=fieldnames['Id'], row=last_free_row).value = row[fieldnames['Id']-1]
+			wb_q_s.cell(column=fieldnames['Type'], row=last_free_row).value = row[fieldnames['Type']-1]
+			# add ParentIdInFile only for answers and first row
+			if (row[fieldnames['ParentIdInFile']-1] != ""):
+				wb_q_s.cell(column=fieldnames['ParentIdInFile'], row=last_free_row).value = row[fieldnames['ParentIdInFile']-1]
+			# remove ParentIdInSite(redundant)
+			# wb_q_s.cell(column=fieldnames['ParentIdInSIte'], row=last_free_row).value = row[fieldnames['ParentIdInSIte']-1]
+			wb_q_s.cell(column=fieldnames['Title'], row=last_free_row).value = row[fieldnames['Title']-1]
+			# if there is no content -> 'N/A'
+			if (row[fieldnames['Content']-1] == ""):
+				wb_q_s.cell(column=fieldnames['Content'], row=last_free_row).value = "N/A"
+			else:
+				wb_q_s.cell(column=fieldnames['Content'], row=last_free_row).value = row[fieldnames['Content']-1]
+			wb_q_s.cell(column=fieldnames['Format'], row=last_free_row).value = row[fieldnames['Format']-1]
+			# if it's a question and not a first row
+			if (row[fieldnames['CategoryId']-1] != "" and row[fieldnames['CategoryId']-1] != "CategoryId"):
+				wb_q_s.cell(column=fieldnames['CategoryId'], row=last_free_row).value = int(row[fieldnames['CategoryId']-1])
+			elif (row[fieldnames['CategoryId']-1] == 'CategoryId'):
+				wb_q_s.cell(column=fieldnames['CategoryId'], row=last_free_row).value = row[fieldnames['CategoryId']-1] 
+			# remove CategoryUrl, Tags, UserName(redundant)
+			# wb_q_s.cell(column=fieldnames['CategoryUrl'], row=last_free_row).value = row[fieldnames['CategoryUrl']-1]
+			# wb_q_s.cell(column=fieldnames['Tags'], row=last_free_row).value = row[fieldnames['Tags']-1]
+			# wb_q_s.cell(column=fieldnames['UserName'], row=last_free_row).value = row[fieldnames['UserName']-1]
+			wb_q_s.cell(column=fieldnames['AnonymousName'], row=last_free_row).value = row[fieldnames['AnonymousName']-1]
+			# remove Notify, ExtraValue(redundant)
+			# wb_q_s.cell(column=fieldnames['Notify'], row=last_free_row).value = row[fieldnames['Notify']-1]
+			# wb_q_s.cell(column=fieldnames['ExtraValue'], row=last_free_row).value = row[fieldnames['ExtraValue']-1]
+			wb_q_s.cell(column=fieldnames['DateTimeFrom'], row=last_free_row).value = row[fieldnames['DateTimeFrom']-1]
+			# remove DateTimeTo, Selected(redundant)
+			# wb_q_s.cell(column=fieldnames['DateTimeTo'], row=last_free_row).value = row[fieldnames['DateTimeTo']-1]
+			# wb_q_s.cell(column=fieldnames['Selected'], row=last_free_row).value = row[fieldnames['Selected']-1]
+			last_free_row = last_free_row + 1
 
 		wb_q.save(filename=os.path.join(root, out_xls_name))
 
 	cli_logger.info(out_xls_name+" is created")
 
-for i in range(1000, 1001, 20):
+for i in range(1000, 10952380, 1000):
 	create_xls(csv_dir+str(i)+'-'+csv_db_name, out_dir+str(i)+'-'+xlsx_name)
-
+	break
 
 
