@@ -64,7 +64,7 @@ ans_username_x = "./form//span[contains(@class, 'qa-a-item-avatar-meta')]/span" 
             "/span[contains(@class, 'qa-a-item-who-data')]/span/a/span[contains(@itemprop, 'name')]"
 
 date_p = "%Y-%m-%dT%H:%M:%S%z" 
-date_f = "%Y-%m-%d %H:%M:%S"
+date_f = "%m/%d/%Y %H:%M:%S"
 
 host = "https://i-otvet.ru"
 next_page = host+"/questions"
