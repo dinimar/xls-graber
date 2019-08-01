@@ -34,7 +34,6 @@ fieldnames = {'Id': 1, 'Type': 2, 'ParentIdInFile': 3, 'ParentIdInSIte': 4,
 def create_xls(csv_name, out_xls_name):
 	last_free_row = 1
 	wb_q = Workbook()
-	# open(os.path.join(root, out_xls_name), 'w').close()
 
 	with open(os.path.join(root, csv_name), newline='', encoding='utf-8') as csvfile:
 		# reader = csv.DictReader(csvfile)
@@ -84,6 +83,6 @@ def create_xls(csv_name, out_xls_name):
 
 for i in range(1000, 10952380, 1000):
 	create_xls(csv_dir+str(i)+'-'+csv_db_name, out_dir+str(i)+'-'+xlsx_name)
-	break
+	# break
 
 
