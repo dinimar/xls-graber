@@ -1,4 +1,5 @@
 import csv
+import datetime
 import logging
 import os
 from openpyxl import Workbook
@@ -31,6 +32,13 @@ fieldnames = {'Id': 1, 'Type': 2, 'ParentIdInFile': 3, 'ParentIdInSIte': 4,
 				'Tags': 10, 'UserName': 11, 'AnonymousName': 12, 'Notify': 13, 'ExtraValue': 14, 
 				'DateTimeFrom': 15, 'DateTimeTo': 16, 'Selected': 17}
 
+date_p = "%m/%d/%Y %H:%M:%S"
+
+def get_date(date_str):
+	# parse string
+	return datetime.datetime.strptime(date_str, date_p)
+
+
 def create_xls(csv_name, out_xls_name):
 	last_free_row = 1
 	wb_q = Workbook()
@@ -39,6 +47,19 @@ def create_xls(csv_name, out_xls_name):
 		# reader = csv.DictReader(csvfile)
 		spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 		wb_q_s = wb_q.active
+		# add header for redundant columns
+		# remove ParentIdInSite(redundant)
+		wb_q_s.cell(column=fieldnames['ParentIdInSIte'], row=last_free_row).value = "ParentIdInSIte"
+		# remove CategoryUrl, Tags, UserName(redundant)
+		wb_q_s.cell(column=fieldnames['CategoryUrl'], row=last_free_row).value = "CategoryUrl"
+		wb_q_s.cell(column=fieldnames['Tags'], row=last_free_row).value = "Tags"
+		wb_q_s.cell(column=fieldnames['UserName'], row=last_free_row).value = "UserName"
+		# remove Notify, ExtraValue(redundant)
+		wb_q_s.cell(column=fieldnames['Notify'], row=last_free_row).value = "Notify"
+		wb_q_s.cell(column=fieldnames['ExtraValue'], row=last_free_row).value = "ExtraValue"
+		# remove DateTimeTo, Selected(redundant)
+		wb_q_s.cell(column=fieldnames['DateTimeTo'], row=last_free_row).value = "DateTimeTo"
+		wb_q_s.cell(column=fieldnames['Selected'], row=last_free_row).value = "Selected"
 		for row in spamreader:
 			# if it's not empty and a first row parse to int
 			if (row[fieldnames['Id']-1] != "" and row[fieldnames['Id']-1] != "Id"):	
@@ -49,9 +70,9 @@ def create_xls(csv_name, out_xls_name):
 			# add ParentIdInFile only for answers and first row
 			if (row[fieldnames['ParentIdInFile']-1] != ""):
 				wb_q_s.cell(column=fieldnames['ParentIdInFile'], row=last_free_row).value = row[fieldnames['ParentIdInFile']-1]
-			# remove ParentIdInSite(redundant)
-			# wb_q_s.cell(column=fieldnames['ParentIdInSIte'], row=last_free_row).value = row[fieldnames['ParentIdInSIte']-1]
-			wb_q_s.cell(column=fieldnames['Title'], row=last_free_row).value = row[fieldnames['Title']-1]
+			# set title if it's a question
+			if (row[fieldnames['Type']-1] == "Q"):
+				wb_q_s.cell(column=fieldnames['Title'], row=last_free_row).value = row[fieldnames['Title']-1]
 			# if there is no content -> 'N/A'
 			if (row[fieldnames['Content']-1] == ""):
 				wb_q_s.cell(column=fieldnames['Content'], row=last_free_row).value = "N/A"
@@ -60,21 +81,13 @@ def create_xls(csv_name, out_xls_name):
 			wb_q_s.cell(column=fieldnames['Format'], row=last_free_row).value = row[fieldnames['Format']-1]
 			# if it's a question and not a first row
 			if (row[fieldnames['CategoryId']-1] != "" and row[fieldnames['CategoryId']-1] != "CategoryId"):
-				wb_q_s.cell(column=fieldnames['CategoryId'], row=last_free_row).value = int(row[fieldnames['CategoryId']-1])
+				wb_q_s.cell(column=fieldnames['CategoryId'], row=last_free_row).value = int(row[fieldnames['CategoryId']-1]) + 55
 			elif (row[fieldnames['CategoryId']-1] == 'CategoryId'):
 				wb_q_s.cell(column=fieldnames['CategoryId'], row=last_free_row).value = row[fieldnames['CategoryId']-1] 
-			# remove CategoryUrl, Tags, UserName(redundant)
-			# wb_q_s.cell(column=fieldnames['CategoryUrl'], row=last_free_row).value = row[fieldnames['CategoryUrl']-1]
-			# wb_q_s.cell(column=fieldnames['Tags'], row=last_free_row).value = row[fieldnames['Tags']-1]
-			# wb_q_s.cell(column=fieldnames['UserName'], row=last_free_row).value = row[fieldnames['UserName']-1]
 			wb_q_s.cell(column=fieldnames['AnonymousName'], row=last_free_row).value = row[fieldnames['AnonymousName']-1]
-			# remove Notify, ExtraValue(redundant)
-			# wb_q_s.cell(column=fieldnames['Notify'], row=last_free_row).value = row[fieldnames['Notify']-1]
-			# wb_q_s.cell(column=fieldnames['ExtraValue'], row=last_free_row).value = row[fieldnames['ExtraValue']-1]
-			wb_q_s.cell(column=fieldnames['DateTimeFrom'], row=last_free_row).value = row[fieldnames['DateTimeFrom']-1]
-			# remove DateTimeTo, Selected(redundant)
-			# wb_q_s.cell(column=fieldnames['DateTimeTo'], row=last_free_row).value = row[fieldnames['DateTimeTo']-1]
-			# wb_q_s.cell(column=fieldnames['Selected'], row=last_free_row).value = row[fieldnames['Selected']-1]
+			# process date str
+			if (row[fieldnames['DateTimeFrom']-1] != "DateTimeFrom"):
+				wb_q_s.cell(column=fieldnames['DateTimeFrom'], row=last_free_row).value = get_date(row[fieldnames['DateTimeFrom']-1])
 			last_free_row = last_free_row + 1
 
 		wb_q.save(filename=os.path.join(root, out_xls_name))
