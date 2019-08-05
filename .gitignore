@@ -7,9 +7,13 @@
 __pycache__/
 *.py[cod]
 *$py.class
+requirements.txt
 
 # C extensions
 *.so
+
+# Idea
+.idea/
 
 # Distribution / packaging
 .Python
