@@ -8,8 +8,8 @@ from datetime import datetime
 from itertools import chain
 
 import requests
-from classes.answer import Answer
-from classes.question import Question
+from entities.answer import Answer
+from entities.question import Question
 from lxml import html
 from lxml.etree import tostring
 
