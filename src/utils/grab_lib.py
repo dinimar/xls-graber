@@ -13,18 +13,18 @@ from entities.question import Question
 from lxml import html
 from lxml.etree import tostring
 
-# create logger
-cli_logger = logging.getLogger('i-otvet-parser')
-# set logging level
-cli_logger.setLevel(logging.DEBUG)
-# create console and file handler
-ch = logging.StreamHandler()
-# create formatter
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# add formatter to handlers
-ch.setFormatter(formatter)
-# add handlers to logger
-cli_logger.addHandler(ch)
+# # create logger
+# cli_logger = logging.getLogger('i-otvet-parser')
+# # set logging level
+# cli_logger.setLevel(logging.DEBUG)
+# # create console and file handler
+# ch = logging.StreamHandler()
+# # create formatter
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# # add formatter to handlers
+# ch.setFormatter(formatter)
+# # add handlers to logger
+# cli_logger.addHandler(ch)
 
 root = "/home/dinir/Documents/git/xls-graber/"
 q_file = "resources/questions.csv"
@@ -85,8 +85,7 @@ def add_header():
     spamwriter = csv.writer(q_filecsv, delimiter=',', quotechar='|', quoting=csv.QUOTE_ALL)
     spamwriter.writerow(fieldnames)
 
-
-def write_in_csv(i):
+def create_q_csv(i):
     global q_filecsv
     global q_file
     global q_list
@@ -94,33 +93,49 @@ def write_in_csv(i):
 
     q_file = fin_q_file[0:10] + str(i) + '-' + fin_q_file[10:]
     q_filecsv = open(os.path.join(root, q_file), 'w', newline='', encoding='utf-8')
-    cli_logger.warn(q_file + " is created")
+    # cli_logger.warn(q_file + " is created")
     add_header()
 
     add_ques()
     add_ans()
-    cli_logger.warn("Added questions in " + q_file)
+    # cli_logger.warn("Added questions in " + q_file)
     q_list = []
     a_list = []
 
     q_filecsv.close()
-    cli_logger.warn(q_file + " is saved")
+    # cli_logger.warn(q_file + " is saved")
+
+
+def create_c_csv():
+    add_cats()
+    # cli_logger.warn("Added categories in " + cat_file)
+    cat_filecsv.close()
+    # cli_logger.warn(cat_file + " is saved")
+
+
+def save(i):
+    create_q_csv(i)
+    create_c_csv()
 
 
 def process_list_page(l_link):
-    if (l_link == (next_page + "?start=" + str(0))):
-        l_link = next_page
+    # q_list = []
 
     tree = get_tree(l_link)
     # get question elements
     questions = tree.xpath(qs_x)
     # get links from elements
 
-    for q in questions:
-        que_link = host + q.attrib.get('href')[1:]
-        process_q_page(que_link)
 
-    cli_logger.info(l_link)
+        # q_list.append(host + q.attrib.get('href')[1:])
+        # process_q_page(que_link)
+
+    return questions
+    # cli_logger.info(l_link)
+
+
+def create_q_link(q):
+    return host + q.attrib.get('href')[1:]
 
 
 def process_q_page(q_link):
@@ -253,15 +268,15 @@ def stringify_children(node):
     return ''.join(filter(None, parts))
 
 
-if __name__ == '__main__':
-    try:
-        for i in range(0, last_page_num, 20):
-            process_list_page(next_page + "?start=" + str(i))
-            if ((i == 1000) or (i == last_page_num)):
-                write_in_csv(i)
-                # break
-    finally:
-        add_cats()
-        cli_logger.warn("Added categories in " + cat_file)
-        cat_filecsv.close()
-        cli_logger.warn(cat_file + " is saved")
+# if __name__ == '__main__':
+#     try:
+#         for i in range(0, last_page_num, 20):
+#             process_list_page(next_page + "?start=" + str(i))
+#             if ((i == 1000) or (i == last_page_num)):
+#                 write_in_csv(i)
+#                 # break
+#     finally:
+#         add_cats()
+#         cli_logger.warn("Added categories in " + cat_file)
+#         cat_filecsv.close()
+#         cli_logger.warn(cat_file + " is saved")

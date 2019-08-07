@@ -7,7 +7,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-requirements.txt
 
 # C extensions
 *.so
@@ -135,7 +134,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Credentials
+# Configuration files
 credentials.yaml
+graber.ini
+xpath.ini
 
 # End of https://www.gitignore.io/api/python

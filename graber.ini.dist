@@ -1,0 +1,5 @@
+[general]
+q_list_page_num: 10 # number of pages
+
+[th_config]
+th_num: 4000 # number of threads
