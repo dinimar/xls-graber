@@ -85,14 +85,14 @@ def cons_q_link(i):
     print("Consumer is dead ", str(i))
 
 
-producers = []
-consumers = []
+# producers = []
+# consumers = []
 cli_logger.info("Start")
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=4000) as executor:
     for index in range(2000):
-        producers.append(executor.submit(prod_q_links, index))
-        consumers.append(executor.submit(cons_q_link, index))
+        executor.submit(prod_q_links, index)
+        executor.submit(cons_q_link, index)
 
 
 cli_logger.info("Finish.")
