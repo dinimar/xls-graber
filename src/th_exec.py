@@ -24,9 +24,8 @@ last_page_num = 10925381
 q_list_page_num = 50
 
 link_pool = Queue(maxsize=q_list_page_num)
-link_pool.put(next_page)
+# link_pool.put(next_page) remove cause it equals next_page+"?start="+str(0))
 p_queue = Queue(q_list_page_num*20+1) # 1 redundant cell for 'poison element'
-eoq_str = "EOQ" # object indicates end of queue
 
 qs_x = "//div[contains(@class, 'qa-q-list')]/div[contains(@class, 'qa-q-list-item')]" \
        "/div[contains(@class, 'qa-q-item-main')]/div[contains(@class, 'qa-q-item-title')]/a"
@@ -36,15 +35,14 @@ pr_num = con_num = 1
 
 con_flag = True
 
+
 def get_tree(link):
     data = requests.get(link)  # bytes
-
     return html.fromstring(data.content.decode('utf-8'))
 
 
-for i in range(20, q_list_page_num*20, 20):
-    # print(i)
-    link_pool.put(str(next_page + "?start=" + str(i)))
+for i in range(q_list_page_num):
+    link_pool.put(str(next_page + "?start=" + str(i*20)))
 
 
 def prod_q_links(i):
