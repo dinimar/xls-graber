@@ -30,7 +30,7 @@ th_num = int(config["th_config"]["th_num"])
 # next_page = host + "/questions"
 # last_page_num = 10925381
 q_list_page_num = int(config["general"]["q_list_page_num"])
-last_page_num = q_list_page_num*20
+last_page_num = 0
 
 link_pool = Queue(maxsize=q_list_page_num)
 # link_pool.put(next_page) remove cause it equals next_page+"?start="+str(0))
@@ -67,7 +67,7 @@ def prod_q_links(i):
         for q in graber.process_list_page(link_pool.get()):
             que_pool.put(graber.create_q_link(q))
         pr_num = pr_num + 20
-        # print("("+str(i)+")Produced page to p_queue:"+str(pr_num))
+        print("("+str(i)+")Produced page to p_queue:"+str(pr_num))
 
     if pr_num == q_list_page_num*20:
         # print("-------------------------------------------------------------Producer put poison")
@@ -87,21 +87,25 @@ def cons_q_link(i):
             # tree = get_tree(data)
             graber.process_q_page(data)
             que_pool.task_done()
-            # print("Consumed: "+str(i))
-            # last_page_num = last_page_num - 1
+            last_page_num = last_page_num + 1
+            print("Consumed: "+str(last_page_num))
+            if (last_page_num % 1000 == 0) and (last_page_num != 0):
+                graber.create_q_csv(last_page_num)
+                # last_page_num = 0
 
     # print("Consumer is dead ", str(i))
 
 
 # producers = []
 # consumers = []
-cli_logger.info("Start")
+cli_logger.info("Start: " + str(q_list_page_num*20))
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=th_num) as executor:
-    for index in range(int(th_num/2)):
-        executor.submit(prod_q_links, index)
-        executor.submit(cons_q_link, index)
-
-graber.save(q_list_page_num * 20)
-
-cli_logger.info("Finish.")
+try:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=th_num) as executor:
+        for index in range(int(th_num/2)):
+            executor.submit(prod_q_links, index)
+            executor.submit(cons_q_link, index)
+finally:
+    # graber.save(q_list_page_num * 20)
+    graber.create_c_csv()
+    cli_logger.info("Finish.")
