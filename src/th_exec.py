@@ -26,9 +26,7 @@ config = configparser.ConfigParser()
 config.read(os.path.join(graber.root, config_file))
 
 th_num = int(config["th_config"]["th_num"])
-# host = "https://i-otvet.ru"
-# next_page = host + "/questions"
-# last_page_num = 10925381
+save_coef = int(config["general"]["save_coef"])
 q_list_page_num = int(config["general"]["q_list_page_num"])
 last_page_num = 0
 
@@ -39,7 +37,7 @@ que_pool = Queue(q_list_page_num * 20 + 1) # 1 redundant cell for 'poison elemen
 # qs_x = "//div[contains(@class, 'qa-q-list')]/div[contains(@class, 'qa-q-list-item')]" \
 #        "/div[contains(@class, 'qa-q-item-main')]/div[contains(@class, 'qa-q-item-title')]/a"
 
-pr_num = 0
+pr_num = 1 # to satisfy xls requirements
 
 
 
@@ -65,31 +63,31 @@ def prod_q_links(i):
         link_pool.task_done()
         # qs = tree.xpath(qs_x)
         for q in graber.process_list_page(link_pool.get()):
-            que_pool.put(graber.create_q_link(q))
-        pr_num = pr_num + 20
+            que_pool.put((graber.create_q_link(q), pr_num)) # you should add in queue link with its id to prevent id collision in csv
+            pr_num = pr_num + 1
         print("("+str(i)+")Produced page to p_queue:"+str(pr_num))
 
-    if pr_num == q_list_page_num*20:
+    if pr_num == q_list_page_num*20 + 1: # cause initial pr_num = 1
         # print("-------------------------------------------------------------Producer put poison")
-        que_pool.put(None)
+        que_pool.put((None, None))
 
 
 def cons_q_link(i):
     global que_pool
     global last_page_num
     while True:
-        data = que_pool.get()
-        if data is None: # check if it poison pill
+        data, q_id = que_pool.get()
+        if (data is None) and (q_id is None): # check if it poison pill
             que_pool.task_done()
-            que_pool.put(data) # return poison pill to make other consumers stop
+            que_pool.put((data, q_id)) # return poison pill to make other consumers stop
             break
         else:
             # tree = get_tree(data)
-            graber.process_q_page(data)
+            graber.process_q_page(data, q_id)
             que_pool.task_done()
             last_page_num = last_page_num + 1
             print("Consumed: "+str(last_page_num))
-            if (last_page_num % 10000 == 0) and (last_page_num != 0):
+            if (last_page_num % 1000 == 0) and (last_page_num != 0):
                 graber.create_q_csv(last_page_num)
                 # last_page_num = 0
 

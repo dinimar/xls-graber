@@ -1,5 +1,17 @@
 [general]
-q_list_page_num: 10 # number of pages
+# number of pages
+q_list_page_num: 10
+# iteration number of pages that will be saved in csv
+save_coef: 1000
+
+[paths]
+q_csv_dir: resources/q-csv/
+q_xls_dir: resources/q-xls/
+cat_dir: resources/cat/
+q_csv_file_name: questions.csv
+q_xls_file_name: questions.xls
+c_file_name: categories.csv
 
 [th_config]
-th_num: 4000 # number of threads
+# number of threads
+th_num: 1000

@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import csv
-import logging
 import os
+import configparser
 from datetime import datetime
-from itertools import chain
+from itertools import chain, count
 
 import requests
 from entities.answer import Answer
@@ -13,28 +13,24 @@ from entities.question import Question
 from lxml import html
 from lxml.etree import tostring
 
-# # create logger
-# cli_logger = logging.getLogger('i-otvet-parser')
-# # set logging level
-# cli_logger.setLevel(logging.DEBUG)
-# # create console and file handler
-# ch = logging.StreamHandler()
-# # create formatter
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# # add formatter to handlers
-# ch.setFormatter(formatter)
-# # add handlers to logger
-# cli_logger.addHandler(ch)
-
 root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-# root = "/home/dinir/Documents/git/xls-graber/"
-q_file = "resources/questions.csv"
-fin_q_file = q_file
-cat_file = "resources/categories.csv"
 
-q_id = 1
-c_id = 1
-last_free_row = 2
+config_file = "graber.ini"
+config = configparser.ConfigParser()
+config.read(os.path.join(root, config_file))
+q_csv_dir = config["paths"]["q_csv_dir"]
+cat_dir = config["paths"]["cat_dir"]
+
+if not os.path.exists(os.path.join(root,q_csv_dir)):
+    os.mkdir(os.path.join(root,q_csv_dir))
+if not os.path.exists(os.path.join(root,cat_dir)):
+    os.mkdir(os.path.join(root,cat_dir))
+
+q_csv_file_name = config["paths"]["q_csv_file_name"]
+c_file_name = config["paths"]["c_file_name"]
+cat_file = os.path.join(root, (cat_dir+c_file_name))
+
+c_id = 0
 
 qs_x = "//div[contains(@class, 'qa-q-list')]/div[contains(@class, 'qa-q-list-item')]/div[contains(@class, 'qa-q-item-main')]/div[contains(@class, 'qa-q-item-title')]/a"
 q_block_x = "//div[contains(@class, 'qa-part-q-view')]//div[contains(@class, 'qa-q-view-main')]"
@@ -69,7 +65,6 @@ date_f = "%m/%d/%Y %H:%M:%S"
 
 host = "https://i-otvet.ru"
 next_page = host + "/questions"
-last_page_num = 10925381
 
 q_list = []
 a_list = []
@@ -79,7 +74,7 @@ fieldnames = ['Id', 'Type', 'ParentIdInFile', 'ParentIdInSIte', 'Title', 'Conten
               'Format', 'CategoryId', 'CategoryUrl', 'Tags', 'UserName',
               'AnonymousName', 'Notify', 'ExtraValue', 'DateTimeFrom', 'DateTimeTo', 'Selected']
 
-cat_filecsv = open(os.path.join(root, cat_file), 'w', newline='', encoding='utf-8')
+cat_filecsv = open(cat_file, 'w+', newline='', encoding='utf-8')
 
 
 def add_header():
@@ -92,8 +87,8 @@ def create_q_csv(i):
     global q_list
     global a_list
 
-    q_file = fin_q_file[0:10] + str(i) + '-' + fin_q_file[10:]
-    q_filecsv = open(os.path.join(root, q_file), 'w', newline='', encoding='utf-8')
+    q_file = os.path.join(root, (q_csv_dir+str(i)+q_csv_file_name))
+    q_filecsv = open(q_file, 'w', newline='', encoding='utf-8')
     # cli_logger.warn(q_file + " is created")
     add_header()
 
@@ -139,8 +134,7 @@ def create_q_link(q):
     return host + q.attrib.get('href')[1:]
 
 
-def process_q_page(q_link):
-    global q_id
+def process_q_page(q_link, q_id):
     tree = get_tree(q_link)
 
     # grab answer title
@@ -172,7 +166,7 @@ def process_q_page(q_link):
                            datetime_from=datetime_from, content=content, cat_id=category_id))
     process_answers(q_id, tree)
 
-    q_id = q_id + 1
+    # q_id = q_id + 1
 
 
 def add_ques():
