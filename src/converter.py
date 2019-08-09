@@ -18,7 +18,7 @@ ch.setFormatter(formatter)
 # add handlers to logger
 cli_logger.addHandler(ch)
 
-root = "/home/dinir/Documents/git/xls-graber/"
+root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 csv_dir = "resources/"
 out_dir = "resources/out/"
 csv_db_name = "questions.csv" 
@@ -94,8 +94,15 @@ def create_xls(csv_name, out_xls_name):
 
 	cli_logger.info(out_xls_name+" is created")
 
-for i in range(1000, 10952380, 1000):
-	create_xls(csv_dir+str(i)+'-'+csv_db_name, out_dir+str(i)+'-'+xlsx_name)
+idx = 10000
+csv_file_name = os.path.join(root, (csv_dir+str(idx)+'-'+csv_db_name))
+xls_file_name = os.path.join(root, (out_dir+str(idx)+'-'+xlsx_name))
+# for i in range(1000, 10952380, 1000):
+while (os.path.isfile(csv_file_name)):
+	create_xls(csv_file_name, xls_file_name)
+	csv_file_name = os.path.join(root, (csv_dir+str(idx)+'-'+csv_db_name))
+	xls_file_name = os.path.join(root, (out_dir+str(idx)+'-'+xlsx_name))
+	idx = idx + 10000
 	# break
 
 
