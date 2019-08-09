@@ -20,9 +20,10 @@ config = configparser.ConfigParser()
 config.read(os.path.join(root, config_file))
 q_csv_dir = config["paths"]["q_csv_dir"]
 cat_dir = config["paths"]["cat_dir"]
-
+# create csv dir if there is no such dir
 if not os.path.exists(os.path.join(root,q_csv_dir)):
     os.mkdir(os.path.join(root,q_csv_dir))
+# create cat dir if there is no such dir
 if not os.path.exists(os.path.join(root,cat_dir)):
     os.mkdir(os.path.join(root,cat_dir))
 
@@ -87,7 +88,7 @@ def create_q_csv(i):
     global q_list
     global a_list
 
-    q_file = os.path.join(root, (q_csv_dir+str(i)+q_csv_file_name))
+    q_file = os.path.join(root, (q_csv_dir+str(i)+'-'+q_csv_file_name))
     q_filecsv = open(q_file, 'w', newline='', encoding='utf-8')
     # cli_logger.warn(q_file + " is created")
     add_header()
