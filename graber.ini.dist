@@ -6,12 +6,16 @@ save_coef: 1000
 
 [paths]
 q_csv_dir: resources/q-csv/
-q_xls_dir: resources/q-xls/
+q_xlsx_dir: resources/q-xls/
 cat_dir: resources/cat/
 q_csv_file_name: questions.csv
-q_xls_file_name: questions.xls
+q_xlsx_file_name: questions.xlsx
 c_file_name: categories.csv
 
 [th_config]
 # number of threads
 th_num: 1000
+
+[selenium]
+# 0 - True, 1 - False
+headless: 1

@@ -3,7 +3,6 @@ import datetime
 import logging
 import os
 import configparser
-import utils.grab_lib as graber
 from openpyxl import Workbook
 
 # create logger
@@ -34,9 +33,6 @@ q_xlsx_file_name = config["paths"]["q_xlsx_file_name"]
 
 
 save_coef = int(config["general"]["save_coef"])
-
-# xlsx_file = open(os.path.join(root, out_dir+xlsx_name), 'w')
-# xlsx_file.close()
 
 fieldnames = {'Id': 1, 'Type': 2, 'ParentIdInFile': 3, 'ParentIdInSIte': 4,
               'Title': 5, 'Content': 6, 'Format': 7, 'CategoryId': 8, 'CategoryUrl': 9,
