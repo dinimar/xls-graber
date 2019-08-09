@@ -89,7 +89,7 @@ def cons_q_link(i):
             que_pool.task_done()
             last_page_num = last_page_num + 1
             print("Consumed: "+str(last_page_num))
-            if (last_page_num % 1000 == 0) and (last_page_num != 0):
+            if (last_page_num % 10000 == 0) and (last_page_num != 0):
                 graber.create_q_csv(last_page_num)
                 # last_page_num = 0
 
