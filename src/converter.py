@@ -32,9 +32,6 @@ if not os.path.exists(os.path.join(root, q_xlsx_dir)):
     os.mkdir(os.path.join(root, q_xlsx_dir))
 q_xlsx_file_name = config["paths"]["q_xlsx_file_name"]
 
-config_file = "graber.ini"
-config = configparser.ConfigParser()
-config.read(os.path.join(graber.root, config_file))
 
 save_coef = int(config["general"]["save_coef"])
 
