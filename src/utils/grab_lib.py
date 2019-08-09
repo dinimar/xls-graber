@@ -26,7 +26,8 @@ from lxml.etree import tostring
 # # add handlers to logger
 # cli_logger.addHandler(ch)
 
-root = "/home/dinir/Documents/git/xls-graber/"
+root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# root = "/home/dinir/Documents/git/xls-graber/"
 q_file = "resources/questions.csv"
 fin_q_file = q_file
 cat_file = "resources/categories.csv"
