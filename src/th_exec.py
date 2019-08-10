@@ -85,7 +85,6 @@ def cons_q_link(i):
             que_pool.put((data, q_id)) # return poison pill to make other consumers stop
             break
         else:
-            # tree = get_tree(data)
             try:
                 graber.process_q_page(data, q_id)
                 que_pool.task_done()
