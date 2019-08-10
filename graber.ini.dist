@@ -1,10 +1,12 @@
 [general]
 # number of pages
-q_list_page_num: 10
+q_list_page_num: 100
 # iteration number of pages that will be saved in csv
+# 1000 is limit for server
 save_coef: 1000
 
 [paths]
+# relative paths (auto-creating)
 q_csv_dir: resources/q-csv/
 q_xlsx_dir: resources/q-xls/
 cat_dir: resources/cat/
@@ -18,4 +20,4 @@ th_num: 1000
 
 [selenium]
 # 0 - True, 1 - False
-headless: 1
+headless: 0

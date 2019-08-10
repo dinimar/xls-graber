@@ -3,7 +3,6 @@ import configparser
 import os
 import requests
 from lxml import html
-from threading import Thread
 from queue import Queue
 import logging
 import utils.grab_lib as graber
@@ -65,11 +64,13 @@ def prod_q_links(i):
         for q in graber.process_list_page(link_pool.get()):
             que_pool.put((graber.create_q_link(q), pr_num)) # you should add in queue link with its id to prevent id collision in csv
             pr_num = pr_num + 1
-        print("("+str(i)+")Produced page to p_queue:"+str(pr_num))
+        # print("("+str(i)+")Produced page to p_queue:"+str(pr_num))
 
     if pr_num == q_list_page_num*20 + 1: # cause initial pr_num = 1
         # print("-------------------------------------------------------------Producer put poison")
         que_pool.put((None, None))
+
+    cons_q_link(i)
 
 
 def cons_q_link(i):
@@ -83,13 +84,15 @@ def cons_q_link(i):
             break
         else:
             # tree = get_tree(data)
-            graber.process_q_page(data, q_id)
-            que_pool.task_done()
-            last_page_num = last_page_num + 1
-            print("Consumed: "+str(last_page_num))
-            if (last_page_num % save_coef == 0) and (last_page_num != 0):
-                graber.create_q_csv(last_page_num)
-                # last_page_num = 0
+            try:
+                graber.process_q_page(data, q_id)
+                que_pool.task_done()
+                last_page_num = last_page_num + 1
+                # print("Consumed: "+str(last_page_num))
+                if (last_page_num % save_coef == 0) and (last_page_num != 0):
+                    graber.create_q_csv(last_page_num)
+            finally:
+                pass
 
     # print("Consumer is dead ", str(i))
 
