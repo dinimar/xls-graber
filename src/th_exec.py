@@ -1,10 +1,12 @@
 import concurrent.futures
 import configparser
+import logging
 import os
+from queue import Queue
+
 import requests
 from lxml import html
-from queue import Queue
-import logging
+
 import utils.grab_lib as graber
 
 # create logger
@@ -91,6 +93,8 @@ def cons_q_link(i):
                 # print("Consumed: "+str(last_page_num))
                 if (last_page_num % save_coef == 0) and (last_page_num != 0):
                     graber.create_q_csv(last_page_num)
+                if (last_page_num % save_coef*100 == 0):
+                    graber.create_c_csv()
             finally:
                 pass
 
