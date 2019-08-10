@@ -98,8 +98,6 @@ def cons_q_link(i):
             finally:
                 pass
 
-    # print("Consumer is dead ", str(i))
-
 
 cli_logger.info("Start: " + str(q_list_page_num*20))
 
