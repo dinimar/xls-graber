@@ -101,8 +101,6 @@ def cons_q_link(i):
     # print("Consumer is dead ", str(i))
 
 
-# producers = []
-# consumers = []
 cli_logger.info("Start: " + str(q_list_page_num*20))
 
 try:
